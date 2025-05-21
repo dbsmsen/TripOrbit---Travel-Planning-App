@@ -6,13 +6,15 @@ class AuthService {
   AuthService(this.client);
 
   Future<void> signIn({required String email, required String password}) async {
-    final response = await client.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      final response = await client.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
 
-    if (response.error != null) {
-      throw Exception(response.error!.message);
+      // No need to check for error, exceptions will be thrown automatically
+    } catch (e) {
+      throw Exception('Failed to sign in: $e');
     }
   }
 
@@ -20,22 +22,27 @@ class AuthService {
     await client.auth.signOut();
   }
 
-  Future<void> register({required String email, required String password}) async {
-    final response = await client.auth.signUp(
-      email: email,
-      password: password,
-    );
+  Future<void> register(
+      {required String email, required String password}) async {
+    try {
+      final response = await client.auth.signUp(
+        email: email,
+        password: password,
+      );
 
-    if (response.error != null) {
-      throw Exception(response.error!.message);
+      // No need to check for error, exceptions will be thrown automatically
+    } catch (e) {
+      throw Exception('Failed to register: $e');
     }
   }
 
   Future<void> recoverPassword({required String email}) async {
-    final response = await client.auth.resetPasswordForEmail(email);
+    try {
+      await client.auth.resetPasswordForEmail(email);
 
-    if (response.error != null) {
-      throw Exception(response.error!.message);
+      // No need to check for error, exceptions will be thrown automatically
+    } catch (e) {
+      throw Exception('Failed to send password recovery email: $e');
     }
   }
 }
